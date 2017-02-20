@@ -28,7 +28,7 @@ Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/4
 ---
 ### README
 
-Here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
+Here is a link to my [project code](https://github.com/aulukelvin/CarND-Traffic-Sign-Recognition/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ### Data Set Summary & Exploration
 The code for this step is contained in the second and the third code cell of the IPython notebook. I used the numpy library to calculate summary statistics of the traffic
