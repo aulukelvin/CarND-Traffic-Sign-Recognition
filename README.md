@@ -13,7 +13,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./images/histogram.png "Histogram"
 [image2]: ./images/classifiedimages.png "Classified images"
-[image3]: ./images/batchsize.jpg "Batch size vs valid accuracy"
+[image3]: ./images/batchsize.png "Batch size vs valid accuracy"
 [image4]: ./images/mean.png "Mean normalization"
 [image5]: ./testing_data/5/asd.jpeg "Traffic Sign 5"
 [image6]: ./testing_data//21/21doubleCurve.jpeg "Traffic Sign 21"
