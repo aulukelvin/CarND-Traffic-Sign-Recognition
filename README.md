@@ -20,6 +20,14 @@ The goals / steps of this project are the following:
 [image7]: ./testing_data/22/bumpyroadcropped.jpeg "Traffic Sign 22"
 [image8]: ./testing_data/23/23slipperyroad.jpeg "Traffic Sign 23"
 [image9]: ./testing_data/29/29bicyclecrossing.jpeg "Traffic Sign 29"
+[image10]: ./images/augmentation.png "augmentation.png"
+[image11]: ./images/test1.png "test1"
+[image12]: ./images/test2.png "test2"
+[image13]: ./images/test3.png "test3"
+[image14]: ./images/test4.png "test4"
+[image15]: ./images/test5.png "test5"
+[image16]: ./images/model.png "model"
+[image17]: ./images/grayscale.png "grayscale"
 
 
 ### Rubric Points
@@ -28,7 +36,7 @@ Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/4
 ---
 ### README
 
-Here is a link to my [project code](https://github.com/aulukelvin/CarND-Traffic-Sign-Recognition/blob/master/Traffic_Sign_Classifier.ipynb)
+Here is a link to my [project code](https://github.com/aulukelvin/CarND-Traffic-Sign-Recognition/blob/master/Traffic_Sign_Classifier_V2.ipynb)
 
 ### Data Set Summary & Exploration
 The code for this step is contained in the second and the third code cell of the IPython notebook. I used the numpy library to calculate summary statistics of the traffic
@@ -60,7 +68,11 @@ As a first step, I calculated the mean of each color channel, subtract the mean 
 
 Then I top up with a histogram normalization which proved to be able to further improve the performance 1-2 percent.
 
-I also tried augment the training data but failed to see any significant so I removed that part from my code. 
+I also tried grayscaling the input images and augmentation to boost the traing data set for each class to over 2600. The grayscale images and the histogram after augmentation are as the followings:
+
+![Gray scale][image17]
+
+![Augmented][image10]
 
 #### 2. Normalization
 I added L2 loss normalization at the very end of the project and found out L2 normalization can greatly reduce overfiting. The code piece of L2 normalization is as the following:
@@ -95,6 +107,8 @@ My final model consisted of the following layers:
 | Fully connected		| input 1024, output 256						|
 | Fully connected		| input 1024, output 128						|
 | Softmax				| input 128, output 43							|
+
+![Model][image16]
 
 #### 4. Training
 
@@ -144,29 +158,12 @@ The fourteenth cell of the jupyter notebook is a modified evaluate function prod
 
 The test result is as the following:
 
-```
-Test Accuracy = 0.200, Loss = 15.533
-Top 5 cross entropy
-Image 0, real label 5
-top 5 classes: [ 2  4 38 36  1]
-probability: [ 32.93254852  14.48922062  11.68265152  11.54993439   8.5348711 ]
+![Test image 1][image11]
+![Test image 2][image12]
+![Test image 3][image13]
+![Test image 4][image14]
+![Test image 5][image15]
 
-Image 1, real label 21
-top 5 classes: [12 11 21 42 10]
-probability: [ 14.2425127    9.26583385   7.55679941   4.19406271   1.72866535]
-
-Image 2, real label 22
-top 5 classes: [22 10 25  3  6]
-probability: [ 34.05734253   7.88766718   5.19900179   4.36709929   3.5581634 ]
-
-Image 3, real label 23
-top 5 classes: [11 21  2 27  9]
-probability: [ 33.57806396  27.75547981  12.51885319   4.91595173   2.92011666]
-
-Image 4, real label 29
-top 5 classes: [11 28  9 20  3]
-probability: [ 4.31466913  2.51659632  2.28277302  2.21723866  2.1602664 ]
-```
 The first image is a 80KM/h speed limit sign but the model mistakes it as 50KM/h speed limit sign and it's quite understandable. It might be difficult to classify because 50 and 80 are quite similar. I believe the model may needs more data and more capacity to clearly differentiate those classes. 
 
 But the model was only able to correctly guess 1 of the 5 traffic signs, which is totally different from the accuracy of 95% on the given test data set. And for the only successful test, the top guess probability is only 34%, not so confident at all. And for the test image labeled 23, the model classified it as class 11. From the picture we can see that the two sign have similar pattern, so maybe this failure is also due to lack of training data. For the test cases labeled 21, and 29 the propability are flat which indicates the model has no idea what they are.
