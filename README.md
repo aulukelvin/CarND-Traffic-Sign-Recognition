@@ -50,7 +50,7 @@ signs data set:
 #### Exploratory visualization of the dataset
 The code for this step is contained in the fourth to sixth code cell of the IPython notebook. I used the matplotlib for plotting. 
 
-Here is an exploratory visualization of the data set. I firstly checked the number of images of each class in the histogram as below. It shows that the distribution of the images are widely imbalanced. The most popular classes have nearly 2000 images per each in the training set, while the least popular classes in the training set only have around 200. I noticed the popularity of the classes has strong link to the accuracy of the classification in the later experiment. The second finding is the number of images in training set, validation set and test set looks in proportion over all classes. This is good because we don't need to worry about impact of biased data set. 
+Here is an exploratory visualization of the data set. I firstly checked the number of images of each class in the histogram as below. It shows that the distribution of the images are widely imbalanced. The most popular classes have over 2000 images per each in the training set, while the least popular classes in the training set only have less than 200 images. I noticed the popularity of the classes has strong corelation to the accuracy of the classification in the later experiment. The second finding is the number of images in training set, validation set and test set looks in proportion over all classes. This is good because we don't need to worry about impact of biased data set. 
 
 ![Histogram of classes][image1]
 
@@ -62,17 +62,19 @@ Then I checked what the images in the data set looks like. I firstly explored th
 
 #### 1. Preprocessing
 
-The code for this step is contained in the seventh code cell of the IPython notebook.
+The code for this step is contained in the seventh to thirteenth code cell of the IPython notebook.
 
-As a first step, I calculated the mean of each color channel, subtract the mean from color value and then divided by 180 so that I can convert the color value into float between -1 and 1. This transformation proved to be able to enhanced the performance by 2 percent. 
+As a first step, I used the Keras imagedatagenerator to augment imput data to over 2600. The code pieces are from code cell 7 - 9. The effect of the augmentation was show in code cell 10 as the following:
 
-Then I top up with a histogram normalization which proved to be able to further improve the performance 1-2 percent.
+![Augmented][image10]
 
-I also tried grayscaling the input images and augmentation to boost the traing data set for each class to over 2600. The grayscale images and the histogram after augmentation are as the followings:
+I then turned the color images into gray scaled as shown below:
 
 ![Gray scale][image17]
 
-![Augmented][image10]
+I calculated the mean value of the input images, subtract the mean value and then divided by 180 so that I can convert the value into float between -1 and 1. This transformation proved to be able to enhanced the performance by 2 percent. 
+
+Then I top up with a histogram normalization which proved to be able to further improve the performance 1-2 percent.
 
 #### 2. Normalization
 I added L2 loss normalization at the very end of the project and found out L2 normalization can greatly reduce overfiting. The code piece of L2 normalization is as the following:
@@ -84,9 +86,11 @@ lossL2 = tf.add_n([ tf.nn.l2_loss(v) for v in vars
 cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits, one_hot_y) + lossL2
 ```
 
+I also added early stopping into the code so that only the best model will be kept. I set the early stopping tolerence rate to 3 so if the model doesn't improve in three epochs it will stop.
+
 #### 3. Final model
 
-The code for my final model is located in the tenth cell of the ipython notebook. 
+The code for my final model is located in the sixteenth cell of the ipython notebook.
 
 My final model consisted of the following layers:
 
@@ -112,7 +116,7 @@ My final model consisted of the following layers:
 
 #### 4. Training
 
-The code for training the model is located in the Eleventh cell of the ipython notebook. 
+The code for training the model is located in the seventeenth and eighteenth code cell of the ipython notebook. 
 
 During model training, I used AdamOptimizer and use use training accuracy / loss, validation accuracy / loss to evaluate model performance.
 When I train the model I noticed the result varies significantly from run to run. So I took 3-5 runs and use the average as the final result. This strategy was very useful when the model was not stable and the training was relatively faster. When the model getting more and more complicated, the time is also getting longer and longer so I finally turn back to use single run to evaluate model performance.
@@ -133,14 +137,16 @@ I then slowly adding more capacity to the model by adding more convolutional lay
 
 ![Preprocessing][image4]
 
-Finally I added the L2 loss to the model and surprisingly found out the L2 is doing good job reducing overfitting. I noticed the gap between training and validation loss is much closer and training accuracy also increased a little bit. 
+I added the L2 loss to the model and surprisingly found out the L2 is doing good job reducing overfitting. I noticed the gap between training and validation loss is much closer and training accuracy also increased a little bit. 
+
+Finally I added image augmentation and grayscaling. I found out they can enhance the test performance a little bit.
 
 What I have learnt from this empirical experience is how to evaluate the performance of the model, how to decide when to add more capacity, when to add dropout, when to change learning rate, etc. I found besides the accuracy figures, the loss data can also be very useful for evaluating the progress. 
 
 My final model results were:
-* Training set accuracy = 0.997, training loss = 0.216;
-* Validation set accuracy =  0.968, training loss = 0.336
-* Test Accuracy = 0.951, Loss = 0.430
+* Training set accuracy = 0.991, training loss = 0.227;
+* Validation set accuracy =  0.973, training loss = 0.306
+* Test Accuracy = 0.953, Loss = 0.403
 
 ## Test a Model on New Images
 
@@ -164,13 +170,8 @@ The test result is as the following:
 ![Test image 4][image14]
 ![Test image 5][image15]
 
-The first image is a 80KM/h speed limit sign but the model mistakes it as 50KM/h speed limit sign and it's quite understandable. It might be difficult to classify because 50 and 80 are quite similar. I believe the model may needs more data and more capacity to clearly differentiate those classes. 
+The first image is a 80KM/h speed limit sign but the model mistakes it as 30KM/h speed limit sign and the second guess is end of 80KM/h speed limit sign and that is quite understandable. It might be difficult to classify because 30 and 80 are quite similar, 80 km/h and end of 80km/h signs are also looks alike. I believe the model may needs more data and more capacity to clearly differentiate those classes. 
 
-But the model was only able to correctly guess 1 of the 5 traffic signs, which is totally different from the accuracy of 95% on the given test data set. And for the only successful test, the top guess probability is only 34%, not so confident at all. And for the test image labeled 23, the model classified it as class 11. From the picture we can see that the two sign have similar pattern, so maybe this failure is also due to lack of training data. For the test cases labeled 21, and 29 the propability are flat which indicates the model has no idea what they are.
+And for the test image labeled 23(slippy road), the model classified it as class 31(wild animal crossing). From the picture we can see that the two sign have similar pattern, so maybe this failure is also due to lack of training data or limited capacity.
 
-During exploration of the training images I noticed that most of the images were taken from several videos. The shape, position, lighting, and background of the images are very similar within groups. Inevitably, the images among training set, validation set, and test set are quite possibly highly related. So that instead of using the content of the sign panel as the input, the model may takes other noise such as the background to classify the images. And somehow the model may be really successful in using the leaking information rather than analyze the traffic sign itself. If we get new picture without such kinds of 'hint', the model will fail.
-
-To further improve the model to make it general, maybe we can try to use opencv to crop out exactly the traffic sign itself to reduce the background as much as possible, and then we find a way to transform for example tilted sign to a regular one. We can also separate images into different groups according their similarity and avoid split images from same similarity group into both training and validation data set. By this way, we can reduce the opportunity of the 'cheating' in the model training. I think vastly augment data, use transformed data may help reduce the overfitting as well. Last and equally important, to reduce the error like mistakes 80 as 50, the model may need more capacity clearly identify the difference between the numbers. 
-
-From the five test images I found that the quality of the input data has huge impact on the performance of the model. Four of the images from least popular classes yield very poor performance. I believe data augmentation may be a heal to the problem but I need to be more skillful to use that technique. 
-
+For all other testing images the model can predict correctly with very high confidence. 
